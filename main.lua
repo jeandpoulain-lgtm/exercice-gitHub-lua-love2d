@@ -9,18 +9,29 @@ io.stdout:setvbuf("no")
 sprite = require "spriteManager"
 
 
+
 function love.load()
-    hero1 = creatSprite("hero", 10, 10)
-    print("hero est positioner a : "..hero1.x)
+    hero1 = creatSprite("hero", 10, 50)
+    
     hero2 = creatSprite("enemie1", 100, 100)
-    print("l enemie est positioner en: ".. hero2.x.." "..hero2.y)
+    
 end
 
 function love.update(dt)
+    
+
+     
 end
 
 function love.draw()
+    
+    love.graphics.rectangle("fill", hero1.x, hero1.y, 50, 50)
 end
 
 function love.keypressed(key)
+
+    if key == "space" then
+        
+    end
+
 end
