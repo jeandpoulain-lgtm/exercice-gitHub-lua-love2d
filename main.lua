@@ -6,23 +6,14 @@ end
 -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf("no")
 
-listSprite = {}
-
---creation fonction usine de sprite
-function creatSprite(pType, pX, pY)
-    local sprite = {}
-    sprite.type = pType
-    sprite.x = pX
-    sprite.y = pY
-    table.insert(listSprite, sprite)
-    return sprite
-end
+sprite = require "spriteManager"
 
 
 function love.load()
     hero1 = creatSprite("hero", 10, 10)
     print("hero est positioner a : "..hero1.x)
-
+    hero2 = creatSprite("enemie1", 100, 100)
+    print("l enemie est positioner en: ".. hero2.x.." "..hero2.y)
 end
 
 function love.update(dt)
