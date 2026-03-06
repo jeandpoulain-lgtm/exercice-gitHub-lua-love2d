@@ -11,15 +11,37 @@ require "spriteManager"
 WindowWidth = love.graphics.getWidth()
 WindowHeight = love.graphics.getHeight()
 
+function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
+    return x1 < x2+w2 and
+           x2 < x1+w1 and
+           y1 < y2+h2 and
+           y2 < y1+h1
+end
+
 function love.load()
     --=================
     --création du hero
     --=================
     hero1 = creatSprite("hero",  WindowWidth/2 - 50 , WindowHeight - 60, 50, 50)
     hero1.speed = 400
+
+    -- Timer pour le spawn des ennemis
+    enemySpawnTimer = 0
+
 end
 
 function love.update(dt)
+
+    --=================================================
+    --spawn creation des enemies toutes les 5 secondes
+    --=================================================
+    enemySpawnTimer = enemySpawnTimer + dt
+    if enemySpawnTimer >= 5 then
+        for i = 1, math.random(1, 3) do
+            enemy = creatSprite("enemy", math.random(0, WindowWidth - 50), math.random(0, WindowHeight/2), 50, 50)
+        end
+        enemySpawnTimer = 0
+    end
 
     --====================
     --déplacement du hero
@@ -59,15 +81,60 @@ function love.update(dt)
         end
     end
 
+    --=======================
+    --update des enemies
+    --=======================
+    for i, sprite in ipairs(listSprite) do
+        if sprite.type == "enemy" then
+            sprite.y = sprite.y + 100 * dt
+            if sprite.y > WindowHeight then
+                sprite.del = true
+            end
+        end
+    end
+
+    --=======================
+    --suppression des enemies
+    --=======================
+    for i = #listSprite, 1, -1 do
+        if listSprite[i].del == true then
+            table.remove(listSprite, i)
+        end
+    end
+    
+    --=======================
+    --collision bullet-enemy
+    --=======================
+    for i, sprite in ipairs(listSprite) do 
+        if sprite.type == "bullet" then
+            for j, sprite2 in ipairs(listSprite) do
+                if sprite2.type == "enemy" then
+                    if CheckCollision(sprite.x - sprite.radius, 
+                                      sprite.y - sprite.radius, 
+                                      sprite.radius*2, 
+                                      sprite.radius*2, 
+                                      sprite2.x, sprite2.y, 
+                                      sprite2.width, 
+                                      sprite2.height) then
+                        sprite.del = true
+                        sprite2.del = true
+                    end
+                end
+            end
+        end
+    end
+
 end
 
 function love.draw()
     --==============
     --draw du hero
     --==============
-
     love.graphics.rectangle("fill", hero1.x, hero1.y, hero1.width, hero1.height)
 
+    --==========================
+    --affichage des bullets
+    --==========================
     for i, sprite in ipairs(listSprite) do
         if sprite.type == "bullet" then
             love.graphics.circle("fill", sprite.x, sprite.y, sprite.radius)
@@ -81,7 +148,14 @@ function love.draw()
         love.graphics.print("Nombre de bullets et du hero : " .. #listSprite, 10, 10)
     end
 
-
+    --==========================
+    --affichage enemies
+    --==========================
+    for i, sprite in ipairs(listSprite) do
+        if sprite.type == "enemy" then
+            love.graphics.rectangle("fill", sprite.x, sprite.y, sprite.width, sprite.height)
+        end
+    end
 
 end
 
