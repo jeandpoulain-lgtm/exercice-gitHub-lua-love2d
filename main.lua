@@ -22,11 +22,13 @@ function love.load()
     --=================
     --création du hero
     --=================
+    --print("Création du hero")
     hero1 = creatSprite("hero",  WindowWidth/2 - 50 , WindowHeight - 60, 50, 50)
     hero1.speed = 400
 
     -- Timer pour le spawn des ennemis
     enemySpawnTimer = 0
+
 
 end
 
